@@ -1,0 +1,22 @@
+# Premium SaaS Dashboard Redesign Tasks
+
+- `[x]` **Refactor HTML Structure**
+  - Create a Sidebar `<nav>` for navigation links.
+  - Create a Top `<header>` with glassmorphism, greeting, and dark mode toggle.
+  - Set up view containers: `#view-dashboard`, `#view-study-plan`, `#view-progress`, `#view-settings`.
+  - Add Skeleton loader elements and dynamic HTML targets for JS injection.
+- `[x]` **Enhance CSS Styles & Dark Mode**
+  - Implement full CSS variable system supporting `[data-theme='dark']`.
+  - Apply Grid layout (Sidebar + Main Content).
+  - Add SaaS minimal styles (12px rounded corners, soft shadows, `#1E293B` backgrounds).
+  - Implement hover effects (lifting cards, scaling buttons, gradient highlights).
+  - Add smooth transitions (`0.2s cubic-bezier` on cards, buttons, checkboxes, and theme colors).
+- `[x]` **Implement JS Routing & Interactions**
+  - Add logic to toggle Sidebar active states and display corresponding views (`appRouter()`).
+  - Create Dark Mode toggle logic synced with `localStorage` (`initTheme`, `toggleTheme`).
+  - Add dynamic greeting based on the current time (Morning, Afternoon, Evening).
+  - Formatted Progress View to dynamically read plan history and calculate individual subject progress bar percentages.
+- `[x]` **Verification & Walkthrough**
+  - Verified dark mode.
+  - Verified SPA view switching.
+  - Create `walkthrough.md`.
