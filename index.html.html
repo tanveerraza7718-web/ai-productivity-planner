@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Study Planner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+
+    /* Smooth fade-in */
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Card hover */
+    .card {
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+    }
+
+    /* Button animation */
+    .btn {
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Checkbox animation */
+    .check {
+      transition: all 0.3s ease;
+    }
+
+    .check:checked {
+      transform: scale(1.2);
+    }
+
+    /* Progress animation */
+    .progress {
+      transition: width 0.6s ease-in-out;
+    }
+
+    /* Dark mode transition */
+    body {
+      transition: background 0.4s, color 0.4s;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-100 text-slate-900" id="body">
+
+<div class="flex h-screen">
+
+  <!-- Sidebar -->
+  <div class="w-64 bg-white shadow-lg p-5 hidden md:block fade-in">
+    <h1 class="text-2xl font-bold text-indigo-600 mb-8">StudyAI</h1>
+    <ul class="space-y-4">
+      <li class="text-indigo-600 font-semibold">Dashboard</li>
+      <li class="hover:text-indigo-500 cursor-pointer transition">Study Plan</li>
+      <li class="hover:text-indigo-500 cursor-pointer transition">Progress</li>
+      <li class="hover:text-indigo-500 cursor-pointer transition">Settings</li>
+    </ul>
+  </div>
+
+  <!-- Main -->
+  <div class="flex-1 p-6 overflow-y-auto">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6 fade-in">
+      <h2 class="text-2xl font-semibold">Welcome back 👋</h2>
+      <button onclick="toggleDark()" class="btn bg-indigo-600 text-white px-4 py-2 rounded-lg shadow">
+        Toggle Dark
+      </button>
+    </div>
+
+    <!-- Input -->
+    <div class="card bg-white p-6 rounded-xl mb-6 fade-in">
+      <h3 class="text-lg font-semibold mb-4">Create Study Plan</h3>
+      <input id="subjects" placeholder="Subjects (comma separated)" class="w-full p-2 border rounded mb-3 focus:ring-2 focus:ring-indigo-400 outline-none">
+      <input id="hours" type="number" placeholder="Hours per day" class="w-full p-2 border rounded mb-3 focus:ring-2 focus:ring-indigo-400 outline-none">
+      <button onclick="generatePlan()" class="btn bg-indigo-600 text-white px-4 py-2 rounded shadow">
+        Generate Plan
+      </button>
+    </div>
+
+    <!-- Tasks -->
+    <div class="card bg-white p-6 rounded-xl mb-6 fade-in">
+      <h3 class="text-lg font-semibold mb-4">Today's Tasks</h3>
+      <ul id="taskList" class="space-y-3"></ul>
+    </div>
+
+    <!-- Progress -->
+    <div class="card bg-white p-6 rounded-xl fade-in">
+      <h3 class="text-lg font-semibold mb-4">Progress</h3>
+      <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+        <div id="progressBar" class="progress bg-green-500 h-4 rounded-full"></div>
+      </div>
+      <p id="progressText" class="mt-2 text-sm text-gray-500"></p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+function save() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function generatePlan() {
+  let subjects = document.getElementById("subjects").value.split(",");
+  tasks = subjects.map(s => ({
+    name: "Study " + s.trim(),
+    done: false
+  }));
+
+  save();
+  render();
+}
+
+function toggleTask(i) {
+  tasks[i].done = !tasks[i].done;
+  save();
+  render();
+}
+
+function render() {
+  let list = document.getElementById("taskList");
+  list.innerHTML = "";
+
+  let completed = 0;
+
+  tasks.forEach((t, i) => {
+    if (t.done) completed++;
+
+    let li = document.createElement("li");
+    li.className = "flex justify-between items-center bg-slate-50 p-3 rounded card fade-in";
+
+    li.innerHTML = \`
+      <span class="\${t.done ? 'line-through text-gray-400' : ''} transition-all duration-300">\${t.name}</span>
+      <input type="checkbox" class="check" \${t.done ? 'checked' : ''} onclick="toggleTask(\${i})">
+    \`;
+
+    list.appendChild(li);
+  });
+
+  let progress = tasks.length ? Math.round((completed / tasks.length) * 100) : 0;
+  document.getElementById("progressBar").style.width = progress + "%";
+  document.getElementById("progressText").innerText = progress + "% completed";
+}
+
+function toggleDark() {
+  let body = document.getElementById("body");
+  body.classList.toggle("bg-slate-900");
+  body.classList.toggle("text-white");
+}
+
+render();
+</script>
+
+</body>
+</html>
